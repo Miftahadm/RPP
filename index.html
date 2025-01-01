@@ -124,7 +124,7 @@
                 <div class="grid">
                     <div class="form-group">
                         <label>Jenjang</label>
-                        <select class="form-control" id="jenjang" required>
+                        <select class="form-control" id="Jenjang" required>
                             <option value="">Pilih Jenjang</option>
                             <option value="KMI">KMI</option>
                             <option value="MA">MA</option>
@@ -156,7 +156,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Tahun Ajaran</label>
+                    <label>Tanggal Mengajar</label>
                     <input type="text" class="form-control" id="tahunAjaran" placeholder="2024/2025" required>
                 </div>
 
@@ -232,7 +232,7 @@
         function updatePreview() {
             const preview = document.getElementById('previewRPP');
             const formData = {
-                sekolah: document.getElementById('sekolah').value,
+                Jenjang: document.getElementById('Jenjang').value,
                 mataPelajaran: document.getElementById('mataPelajaran').value,
                 kelas: document.getElementById('kelas').value,
                 semester: document.getElementById('semester').value,
@@ -244,10 +244,10 @@
 
             preview.innerHTML = `
                 <h2>RENCANA PELAKSANAAN PEMBELAJARAN</h2>
-                <p><strong>Sekolah:</strong> ${formData.sekolah}</p>
+                <p><strong>Jenjang:</strong> ${formData.Jenjang}</p>
                 <p><strong>Mata Pelajaran:</strong> ${formData.mataPelajaran}</p>
                 <p><strong>Kelas/Semester:</strong> ${formData.kelas}/${formData.semester}</p>
-                <p><strong>Tahun Ajaran:</strong> ${formData.tahunAjaran}</p>
+                <p><strong>Tanggal Mengajar:</strong> ${formData.tahunAjaran}</p>
                 
                 <div style="margin-top: 20px;">
                     <h3>Tujuan Pembelajaran:</h3>
@@ -277,6 +277,67 @@
                 ` : ''}
             `;
         }
+    </script>
+
+    <!-- Add jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Previous styles remain the same */
+        .btn-download {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .btn-download:hover {
+            background: #45a049;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<!-- Previous head content remains the same -->
+<body>
+    <!-- Previous body content remains the same until the Preview RPP card -->
+
+    <div class="card">
+            <button class="btn-download no-print" onclick="generatePDF()">Download PDF RPP</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize jsPDF
+        window.jsPDF = window.jspdf.jsPDF;
+
+        // Previous script content remains the same
+
+        // Add PDF generation function
+        function generatePDF() {
+            const element = document.getElementById('previewRPP');
+            html2canvas(element).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('RPP_Trubus.pdf');
+            });
+        }
+
+        // Rest of your existing script remains the same
     </script>
 </body>
 </html>
