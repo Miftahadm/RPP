@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPP Trubus Iman</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4A90E2;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .btn {
+            background: #4A90E2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #357ABD;
+        }
+
+        .soal-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .preview {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .preview h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+            .preview {
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1 class="card-title">RPP Trubus Iman</h1>
+            
+            <form id="rppForm">
+                <div class="grid">
+                    <div class="form-group">
+                        <label>Jenjang</label>
+                        <select class="form-control" id="jenjang" required>
+                            <option value="">Pilih Jenjang</option>
+                            <option value="KMI">KMI</option>
+                            <option value="MA">MA</option>
+                        </select>
+                    </div>                    <div class="form-group">
+                        <label>Mata Pelajaran</label>
+                        <input type="text" class="form-control" id="mataPelajaran" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kelas</label>
+                        <select class="form-control" id="kelas" required>
+                            <option value="">Pilih Kelas</option>
+                            <option value="VII">1</option>
+                            <option value="VIII">2</option>
+                            <option value="IX">3</option>
+                            <option value="X">4</option>
+                            <option value="XI">11 MA</option>
+                            <option value="XII">12 MA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <select class="form-control" id="semester" required>
+                            <option value="">Pilih Semester</option>
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tahun Ajaran</label>
+                    <input type="text" class="form-control" id="tahunAjaran" placeholder="2024/2025" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Tujuan Pembelajaran</label>
+                    <textarea class="form-control" id="tujuanPembelajaran" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Langkah Pembelajaran</label>
+                    <textarea class="form-control" id="langkahPembelajaran" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Penilaian</label>
+                    <textarea class="form-control" id="penilaian" required></textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Soal Evaluasi</h2>
+            <button class="btn" id="tambahSoal">Tambah Soal</button>
+            <div id="soalContainer"></div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">Preview RPP</h2>
+            <div id="previewRPP" class="preview"></div>
+            <button class="btn no-print" onclick="window.print()">Cetak RPP</button>
+        </div>
+    </div>
+
+    <script>
+        let soalList = [];
+
+        document.getElementById('tambahSoal').addEventListener('click', () => {
+            const soalContainer = document.getElementById('soalContainer');
+            const soalIndex = soalList.length;
+
+            const soalDiv = document.createElement('div');
+            soalDiv.className = 'soal-item';
+            soalDiv.innerHTML = `
+                <div class="form-group">
+                    <label>Pertanyaan</label>
+                    <textarea class="form-control" id="pertanyaan${soalIndex}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Kunci Jawaban</label>
+                    <textarea class="form-control" id="jawaban${soalIndex}"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Bobot Nilai</label>
+                    <input type="number" class="form-control" id="bobot${soalIndex}" min="0" max="100">
+                </div>
+            `;
+
+            soalContainer.appendChild(soalDiv);
+            soalList.push({
+                pertanyaan: '',
+                jawaban: '',
+                bobot: 0
+            });
+
+            updatePreview();
+        });
+
+        // Update preview saat form berubah
+        document.querySelectorAll('.form-control').forEach(element => {
+            element.addEventListener('input', updatePreview);
+        });
+
+        function updatePreview() {
+            const preview = document.getElementById('previewRPP');
+            const formData = {
+                sekolah: document.getElementById('sekolah').value,
+                mataPelajaran: document.getElementById('mataPelajaran').value,
+                kelas: document.getElementById('kelas').value,
+                semester: document.getElementById('semester').value,
+                tahunAjaran: document.getElementById('tahunAjaran').value,
+                tujuanPembelajaran: document.getElementById('tujuanPembelajaran').value,
+                langkahPembelajaran: document.getElementById('langkahPembelajaran').value,
+                penilaian: document.getElementById('penilaian').value
+            };
+
+            preview.innerHTML = `
+                <h2>RENCANA PELAKSANAAN PEMBELAJARAN</h2>
+                <p><strong>Sekolah:</strong> ${formData.sekolah}</p>
+                <p><strong>Mata Pelajaran:</strong> ${formData.mataPelajaran}</p>
+                <p><strong>Kelas/Semester:</strong> ${formData.kelas}/${formData.semester}</p>
+                <p><strong>Tahun Ajaran:</strong> ${formData.tahunAjaran}</p>
+                
+                <div style="margin-top: 20px;">
+                    <h3>Tujuan Pembelajaran:</h3>
+                    <p>${formData.tujuanPembelajaran}</p>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3>Langkah Pembelajaran:</h3>
+                    <p>${formData.langkahPembelajaran}</p>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3>Penilaian:</h3>
+                    <p>${formData.penilaian}</p>
+                </div>
+
+                ${soalList.length > 0 ? `
+                    <div style="margin-top: 20px;">
+                        <h3>Soal Evaluasi:</h3>
+                        ${soalList.map((_, index) => `
+                            <div style="margin-top: 10px;">
+                                <p><strong>Soal ${index + 1}:</strong> ${document.getElementById(`pertanyaan${index}`).value}</p>
+                                <p><strong>Bobot:</strong> ${document.getElementById(`bobot${index}`).value}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            `;
+        }
+    </script>
+</body>
+</html>
