@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPP Trubus Iman</title>
+    <title>Aplikasi RPP</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
@@ -12,52 +12,42 @@
             margin: 0 auto;
             padding: 20px;
         }
-        .container {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
         .section {
-            margin-bottom: 20px;
-            padding: 15px;
-            background: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
             border-radius: 5px;
         }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
+        .btn {
             background-color: #4CAF50;
             color: white;
-            padding: 10px 15px;
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin: 5px;
         }
-        button:hover {
+        .btn:hover {
             background-color: #45a049;
         }
-        .student-list {
-            margin-top: 20px;
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
         th, td {
             border: 1px solid #ddd;
@@ -67,189 +57,302 @@
         th {
             background-color: #f2f2f2;
         }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            margin: 10px 0;
+        }
+        .soal-container {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>RPP Trubus Iman</h1>
-        
-        <!-- Form RPP -->
-        <div class="section">
-            <h2>Pembuatan RPP</h2>
-            <div class="form-group">
-                <label for="mapel">Mata Pelajaran:</label>
-                <input type="text" id="mapel" required>
-            </div>
-            <div class="form-group">
-                <label for="kelas">Kelas:</label>
-                <input type="text" id="kelas" required>
-            </div>
-            <div class="form-group">
-                <label for="tujuan">Tujuan Pembelajaran:</label>
-                <textarea id="tujuan" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="materi">Materi Pembelajaran:</label>
-                <textarea id="materi" rows="4" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="kegiatan">Kegiatan Pembelajaran:</label>
-                <textarea id="kegiatan" rows="4" required></textarea>
-            </div>
-            <button onclick="generateRPPPDF()">Unduh RPP PDF</button>
-        </div>
-
-        <!-- Input Soal Evaluasi -->
-        <div class="section">
-            <h2>Soal Evaluasi</h2>
-            <div id="soal-container">
-                <div class="form-group">
-                    <label for="soal1">Soal 1:</label>
-                    <textarea id="soal1" rows="2" required></textarea>
-                    <label for="jawaban1">Kunci Jawaban:</label>
-                    <input type="text" id="jawaban1" required>
-                    <label for="bobot1">Bobot Nilai:</label>
-                    <input type="number" id="bobot1" min="1" max="100" required>
-                </div>
-            </div>
-            <button onclick="tambahSoal()">Tambah Soal</button>
-        </div>
-
-        <!-- Input Peserta Didik -->
-        <div class="section">
-            <h2>Data Peserta Didik</h2>
-            <div class="form-group">
-                <label for="nama-siswa">Nama Peserta Didik:</label>
-                <input type="text" id="nama-siswa">
-                <button onclick="tambahPesertaDidik()">Tambah Peserta</button>
-            </div>
-            <div class="student-list">
-                <table id="daftar-siswa">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Nilai</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-            <button onclick="generateNilaiPDF()">Unduh PDF Nilai Harian</button>
+    <!-- Data Guru dan Informasi Umum -->
+    <div class="section">
+        <h2>Informasi Umum</h2>
+        <div class="input-group">
+            <label for="nama-guru">Nama Guru:</label>
+            <input type="text" id="nama-guru" required>
+            
+            <label for="tanggal">Tanggal:</label>
+            <input type="date" id="tanggal" required>
+            
+            <label for="mapel">Mata Pelajaran:</label>
+            <input type="text" id="mapel" required>
+            
+            <label for="kelas">Kelas:</label>
+            <input type="text" id="kelas" required>
         </div>
     </div>
 
+    <!-- Bagian RPP -->
+    <div class="section">
+        <h2>Pembuatan RPP</h2>
+        <div class="input-group">
+            <label for="tujuan">Tujuan Pembelajaran:</label>
+            <textarea id="tujuan"></textarea>
+            
+            <label for="materi">Materi Pembelajaran:</label>
+            <textarea id="materi"></textarea>
+            
+            <label for="kegiatan">Kegiatan Pembelajaran:</label>
+            <textarea id="kegiatan"></textarea>
+
+            <label for="gambar">Tambahkan Gambar:</label>
+            <input type="file" id="gambar" accept="image/*" onchange="previewImage(event)">
+            <img id="preview" class="image-preview" style="display: none;">
+        </div>
+    </div>
+
+    <!-- Bagian Soal Evaluasi -->
+    <div class="section">
+        <h2>Soal Evaluasi</h2>
+        <div id="soal-list">
+            <!-- Soal akan ditambahkan di sini -->
+        </div>
+        <button class="btn" onclick="tambahSoal()">Tambah Soal</button>
+    </div>
+
+    <!-- Bagian Daftar Peserta Didik -->
+    <div class="section">
+        <h2>Daftar Peserta Didik</h2>
+        <table id="siswa-table">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Nilai</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Ahmad</td>
+                    <td><input type="number" min="0" max="100"></td>
+                    <td><button class="btn" onclick="hapusSiswa(this)">Hapus</button></td>
+                </tr>
+                <tr>
+                    <td>Sofi</td>
+                    <td><input type="number" min="0" max="100"></td>
+                    <td><button class="btn" onclick="hapusSiswa(this)">Hapus</button></td>
+                </tr>
+                <tr>
+                    <td>Qosim</td>
+                    <td><input type="number" min="0" max="100"></td>
+                    <td><button class="btn" onclick="hapusSiswa(this)">Hapus</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="margin-top: 10px;">
+            <input type="text" id="nama-baru" placeholder="Nama Peserta Didik Baru">
+            <button class="btn" onclick="tambahSiswa()">Tambah Siswa</button>
+        </div>
+    </div>
+
+    <!-- Tombol Unduh -->
+    <div class="section">
+        <button class="btn" onclick="unduhRPP()">Unduh RPP (PDF)</button>
+        <button class="btn" onclick="unduhNilai()">Unduh Nilai Harian (PDF)</button>
+    </div>
+
     <script>
-        // Fungsi untuk menambah soal
-        function tambahSoal() {
-            const container = document.getElementById('soal-container');
-            const soalCount = container.children.length + 1;
-            
-            const soalBaru = document.createElement('div');
-            soalBaru.className = 'form-group';
-            soalBaru.innerHTML = `
-                <label for="soal${soalCount}">Soal ${soalCount}:</label>
-                <textarea id="soal${soalCount}" rows="2" required></textarea>
-                <label for="jawaban${soalCount}">Kunci Jawaban:</label>
-                <input type="text" id="jawaban${soalCount}" required>
-                <label for="bobot${soalCount}">Bobot Nilai:</label>
-                <input type="number" id="bobot${soalCount}" min="1" max="100" required>
-            `;
-            
-            container.appendChild(soalBaru);
-        }
+        let uploadedImage = null;
 
-        // Fungsi untuk menambah peserta didik
-        function tambahPesertaDidik() {
-            const nama = document.getElementById('nama-siswa').value;
-            if (!nama) return;
+        function previewImage(event) {
+            const preview = document.getElementById('preview');
+            const file = event.target.files[0];
+            const reader = new FileReader();
 
-            const table = document.getElementById('daftar-siswa').getElementsByTagName('tbody')[0];
-            const row = table.insertRow();
-            
-            row.innerHTML = `
-                <td>${table.rows.length}</td>
-                <td>${nama}</td>
-                <td><input type="number" min="0" max="100" onchange="updateNilai(this)"></td>
-                <td><button onclick="hapusPeserta(this)">Hapus</button></td>
-            `;
+            reader.onload = function() {
+                preview.src = reader.result;
+                preview.style.display = 'block';
+                uploadedImage = reader.result;
+            }
 
-            document.getElementById('nama-siswa').value = '';
-        }
-
-        // Fungsi untuk menghapus peserta
-        function hapusPeserta(button) {
-            const row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-            updateNomorUrut();
-        }
-
-        // Fungsi untuk update nomor urut
-        function updateNomorUrut() {
-            const rows = document.getElementById('daftar-siswa').getElementsByTagName('tbody')[0].rows;
-            for (let i = 0; i < rows.length; i++) {
-                rows[i].cells[0].textContent = i + 1;
+            if (file) {
+                reader.readAsDataURL(file);
             }
         }
 
-        // Fungsi untuk generate PDF RPP
-        function generateRPPPDF() {
+        function tambahSoal() {
+            const soalList = document.getElementById('soal-list');
+            const soalBaru = document.createElement('div');
+            soalBaru.className = 'soal-container';
+            soalBaru.innerHTML = `
+                <textarea placeholder="Masukkan soal"></textarea>
+                <textarea placeholder="Kunci jawaban"></textarea>
+                <input type="number" placeholder="Bobot nilai" min="0" max="100">
+                <button class="btn" onclick="hapusSoal(this)">Hapus Soal</button>
+            `;
+            soalList.appendChild(soalBaru);
+        }
+
+        function hapusSoal(btn) {
+            btn.parentElement.remove();
+        }
+
+        function tambahSiswa() {
+            const namaBaru = document.getElementById('nama-baru').value;
+            if (namaBaru.trim() === '') return;
+
+            const tbody = document.querySelector('#siswa-table tbody');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${namaBaru}</td>
+                <td><input type="number" min="0" max="100"></td>
+                <td><button class="btn" onclick="hapusSiswa(this)">Hapus</button></td>
+            `;
+            tbody.appendChild(row);
+            document.getElementById('nama-baru').value = '';
+        }
+
+        function hapusSiswa(btn) {
+            btn.closest('tr').remove();
+        }
+
+        function unduhRPP() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
+            // Mengambil data informasi umum
+            const namaGuru = document.getElementById('nama-guru').value;
+            const tanggal = document.getElementById('tanggal').value;
+            const mapel = document.getElementById('mapel').value;
+            const kelas = document.getElementById('kelas').value;
+
+            // Mengambil data RPP
+            const tujuan = document.getElementById('tujuan').value;
+            const materi = document.getElementById('materi').value;
+            const kegiatan = document.getElementById('kegiatan').value;
+
+            // Header
             doc.setFontSize(16);
             doc.text('RENCANA PELAKSANAAN PEMBELAJARAN', 105, 20, { align: 'center' });
             
+            // Informasi umum
             doc.setFontSize(12);
-            doc.text(`Mata Pelajaran: ${document.getElementById('mapel').value}`, 20, 40);
-            doc.text(`Kelas: ${document.getElementById('kelas').value}`, 20, 50);
+            doc.text(`Nama Guru: ${namaGuru}`, 20, 40);
+            doc.text(`Tanggal: ${tanggal}`, 20, 50);
+            doc.text(`Mata Pelajaran: ${mapel}`, 20, 60);
+            doc.text(`Kelas: ${kelas}`, 20, 70);
+
+            // Konten RPP
+            let yPos = 90;
             
-            doc.text('Tujuan Pembelajaran:', 20, 70);
-            doc.text(document.getElementById('tujuan').value, 30, 80);
+            doc.setFontSize(14);
+            doc.text('A. Tujuan Pembelajaran:', 20, yPos);
+            doc.setFontSize(10);
+            const tujuanLines = doc.splitTextToSize(tujuan, 170);
+            doc.text(tujuanLines, 20, yPos + 10);
+
+            yPos += 20 + (tujuanLines.length * 7);
             
-            doc.text('Materi Pembelajaran:', 20, 110);
-            doc.text(document.getElementById('materi').value, 30, 120);
+            doc.setFontSize(14);
+            doc.text('B. Materi Pembelajaran:', 20, yPos);
+            doc.setFontSize(10);
+            const materiLines = doc.splitTextToSize(materi, 170);
+            doc.text(materiLines, 20, yPos + 10);
+
+            yPos += 20 + (materiLines.length * 7);
             
-            doc.text('Kegiatan Pembelajaran:', 20, 150);
-            doc.text(document.getElementById('kegiatan').value, 30, 160);
+            doc.setFontSize(14);
+            doc.text('C. Kegiatan Pembelajaran:', 20, yPos);
+            doc.setFontSize(10);
+            const kegiatanLines = doc.splitTextToSize(kegiatan, 170);
+            doc.text(kegiatanLines, 20, yPos + 10);
+
+            yPos += 20 + (kegiatanLines.length * 7);
+
+            // Tambahkan gambar jika ada
+            if (uploadedImage) {
+                doc.addImage(uploadedImage, 'JPEG', 20, yPos, 100, 60);
+                yPos += 70;
+            }
+
+            // Tambah halaman baru untuk soal evaluasi
+            doc.addPage();
             
-            doc.save('rpp.pdf');
+            // Header Soal Evaluasi
+            doc.setFontSize(14);
+            doc.text('SOAL EVALUASI', 105, 20, { align: 'center' });
+            
+            // Mengambil dan menulis soal-soal
+            const soalContainers = document.querySelectorAll('.soal-container');
+            let soalYPos = 40;
+            
+            soalContainers.forEach((container, index) => {
+                const soal = container.querySelector('textarea:first-child').value;
+                const jawaban = container.querySelector('textarea:nth-child(2)').value;
+                const bobot = container.querySelector('input[type="number"]').value;
+
+                if (soalYPos > 250) {
+                    doc.addPage();
+                    soalYPos = 20;
+                }
+
+                doc.setFontSize(12);
+                doc.text(`Soal ${index + 1} (Bobot: ${bobot}):`, 20, soalYPos);
+                doc.setFontSize(10);
+                const soalLines = doc.splitTextToSize(soal, 170);
+                doc.text(soalLines, 20, soalYPos + 7);
+                
+                doc.setFontSize(10);
+                doc.text(`Kunci Jawaban:`, 20, soalYPos + 7 + (soalLines.length * 7));
+                const jawabanLines = doc.splitTextToSize(jawaban, 170);
+                doc.text(jawabanLines, 20, soalYPos + 14 + (soalLines.length * 7));
+
+                soalYPos += 25 + (soalLines.length * 7) + (jawabanLines.length * 7);
+            });
+
+            // Menyimpan PDF
+            doc.save('RPP_dan_Soal.pdf');
         }
 
-        // Fungsi untuk generate PDF nilai harian
-        function generateNilaiPDF() {
+        function unduhNilai() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
+            // Header
             doc.setFontSize(16);
-            doc.text('DAFTAR NILAI HARIAN', 105, 20, { align: 'center' });
+            doc.text('DAFTAR NILAI HARIAN PESERTA DIDIK', 105, 20, { align: 'center' });
             
-            doc.setFontSize(12);
-            doc.text(`Mata Pelajaran: ${document.getElementById('mapel').value}`, 20, 40);
-            doc.text(`Kelas: ${document.getElementById('kelas').value}`, 20, 50);
-            
-            const rows = document.getElementById('daftar-siswa').getElementsByTagName('tbody')[0].rows;
-            let y = 70;
-            
-            doc.text('No.', 20, y);
-            doc.text('Nama', 40, y);
-            doc.text('Nilai', 160, y);
-            
-            for (let i = 0; i < rows.length; i++) {
-                y += 10;
-                doc.text(rows[i].cells[0].textContent, 20, y);
-                doc.text(rows[i].cells[1].textContent, 40, y);
-                doc.text(rows[i].cells[2].getElementsByTagName('input')[0].value, 160, y);
-            }
-            
-            doc.save('nilai-harian.pdf');
-        }
+            // Informasi umum
+            const namaGuru = document.getElementById('nama-guru').value;
+            const mapel = document.getElementById('mapel').value;
+            const kelas = document.getElementById('kelas').value;
+            const tanggal = document.getElementById('tanggal').value;
 
-        // Fungsi untuk update nilai
-        function updateNilai(input) {
-            if (input.value > 100) input.value = 100;
-            if (input.value < 0) input.value = 0;
+            doc.setFontSize(12);
+            doc.text(`Nama Guru: ${namaGuru}`, 20, 40);
+            doc.text(`Mata Pelajaran: ${mapel}`, 20, 50);
+            doc.text(`Kelas: ${kelas}`, 20, 60);
+            doc.text(`Tanggal: ${tanggal}`, 20, 70);
+            
+            // Tabel nilai
+            let yPos = 90;
+            doc.text('No.', 20, yPos);
+            doc.text('Nama', 40, yPos);
+            doc.text('Nilai', 160, yPos);
+            
+            const rows = document.querySelectorAll('#siswa-table tbody tr');
+            rows.forEach((row, index) => {
+                yPos += 10;
+                const nama = row.cells[0].textContent;
+                const nilai = row.cells[1].querySelector('input').value || '-';
+                
+                doc.text((index + 1).toString(), 20, yPos);
+                doc.text(nama, 40, yPos);
+                doc.text(nilai.toString(), 160, yPos);
+            });
+
+            doc.save('Nilai-Harian.pdf');
         }
     </script>
 </body>
