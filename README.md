@@ -1,4 +1,4 @@
-Saya telah membuat aplikasi RPP sesuai dengan permintaan Anda. Aplikasi ini memiliki fitur-fitur berikut:
+Aplikasi RPP ini memiliki fitur-fitur berikut:
 
 1. Form pembuatan RPP dengan field:
    - Mata Pelajaran
